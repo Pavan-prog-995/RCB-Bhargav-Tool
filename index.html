@@ -255,7 +255,7 @@ const ALLOWED_IPS = [
       <div class="lbl">🤖 Generated Prompt (ready for Claude AI)</div>
       <div class="code-box" id="promptDisplay">Your Code will appear here...</div>
       <div class="row">
-        <button class="btn bg" onclick="copyPrompt()">📋 Copy Full Prompt</button>
+        <button class="btn bg" onclick="copyPrompt()">📋 Copy Full Data</button>
         <button class="btn bo" onclick="openClaude()">🔗 Open Claude AI</button>
         <button class="btn bgr" onclick="goStep(1)">← Back</button>
       </div>
@@ -278,7 +278,7 @@ const ALLOWED_IPS = [
       <div class="row">
         <button class="btn bp" onclick="pasteLatex()">📋 Paste from Clipboard</button>
         <button class="btn bgr" onclick="clearEditor()">🗑 Clear</button>
-        <button class="btn bg" onclick="compileAndGo()">🔄 Compile PDF →</button>
+        <button class="btn bg" onclick="compileAndGo()">🔄 Generate PDF →</button>
         <span style="font-size:11px;color:#6b7280;" id="lcCount">0 lines</span>
         <span style="font-size:11px;color:#6b7280;margin-left:8px;">
           <span style="color:#569cd6;">■</span> Commands &nbsp;
@@ -291,7 +291,7 @@ const ALLOWED_IPS = [
       <textarea id="latexEditor" style="display:none;"></textarea>
       <div id="cmEditor" style="flex:1; min-height:0; border-radius:8px; overflow:hidden; border:1px solid #2a2f45; font-size:13px;"></div>
       <div class="card warn">
-        <strong>Tip:</strong> Colors help you find things fast — <span style="color:#569cd6;">blue = LaTeX commands</span>, <span style="color:#ce9178;">orange = your text/names/dates</span>, <span style="color:#b5cea8;">green = numbers</span>, <span style="color:#6a9955;">grey = comments</span>. Edit anything, then click <strong>Compile PDF</strong>.
+        <strong>Tip:</strong> Colors help you find things fast — <span style="color:#569cd6;">blue =  commands</span>, <span style="color:#ce9178;">orange = your text/names/dates</span>, <span style="color:#b5cea8;">green = numbers</span>, <span style="color:#6a9955;">grey = comments</span>. Edit anything, then click <strong>Compile PDF</strong>.
       </div>
     </div>
 
