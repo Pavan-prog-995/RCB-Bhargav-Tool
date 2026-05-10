@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Resume Optimizer Tool</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/stex/stex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Segoe UI', sans-serif; background: #0f1117; color: #e0e0e0; min-height: 100vh; }
@@ -133,6 +140,34 @@
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: #1a1f2e; }
   ::-webkit-scrollbar-thumb { background: #3d4fd6; border-radius: 3px; }
+
+  /* ── CODEMIRROR EDITOR ── */
+  .CodeMirror {
+    height: 100% !important;
+    font-family: 'Courier New', monospace !important;
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+    background: #1e1e2e !important;
+  }
+  .CodeMirror-scroll { height: 100%; }
+  #cmEditor { display: flex; flex-direction: column; }
+  #cmEditor .CodeMirror { flex: 1; border-radius: 8px; }
+  /* Highlight active line */
+  .CodeMirror-activeline-background { background: #2a2f4a !important; }
+  /* Line numbers */
+  .CodeMirror-gutters { background: #161b27 !important; border-right: 1px solid #2a2f45 !important; }
+  .CodeMirror-linenumber { color: #4a5568 !important; }
+  /* Custom LaTeX token colors */
+  .cm-keyword { color: #569cd6 !important; font-weight: bold; }   /* \commands */
+  .cm-builtin { color: #569cd6 !important; font-weight: bold; }
+  .cm-tag    { color: #569cd6 !important; font-weight: bold; }
+  .cm-bracket { color: #ffd700 !important; font-weight: bold; }   /* {} [] */
+  .cm-string  { color: #ce9178 !important; }                      /* text content */
+  .cm-comment { color: #6a9955 !important; font-style: italic; }  /* % comments */
+  .cm-number  { color: #b5cea8 !important; }                      /* numbers */
+  .cm-atom    { color: #d4a0ff !important; }                      /* special */
+  .cm-variable{ color: #e0e0e0 !important; }
+
 </style>
 </head>
 <body>
@@ -185,10 +220,11 @@ const ALLOWED_IPS = [
 <div id="mainApp">
   <div class="header">
     <div>
-      <h1>🚀 Resume Optimizer Tool</h1>
-      <span>Paste JD →  Download PDF</span>
+      <h1>🚀Ram Career Bridge Staff Portal</h1>
+      <span>Paste JD → Download PDF</span>
     </div>
-    <div class="badge">ATS 100%</div>
+    <div class="badge">Your mission is to apply to 30 jobs every day. Please reach out to Pavan if you have any questions.
+</div>
   </div>
 
   <div class="steps">
@@ -205,28 +241,28 @@ const ALLOWED_IPS = [
       <div class="lbl">📋 Job Description</div>
       <textarea id="jdInput" rows="16" placeholder="Paste the full job description here...&#10;&#10;Include:&#10;• Job Title  • Required Skills  • Responsibilities  • Location"></textarea>
       <div class="row">
-        <button class="btn bp" onclick="generatePrompt()">⚡Paste and Proceed </button>
+        <button class="btn bp" onclick="generatePrompt()">⚡Paste & Continue</button>
         <button class="btn bgr" onclick="document.getElementById('jdInput').value=''">🗑 Clear</button>
         <span style="font-size:11px;color:#6b7280;" id="jdCount">0 chars</span>
       </div>
       <div class="card">
-        <strong>How it works:</strong> Paste the job description → auto-combines with your hidden resume + ATS instructions → copy → paste into Claude AI → paste code back → download PDF.
+        <strong>How it works:</strong> Paste the job description → auto-combines with your hidden resume + ATS instructions → copy → paste into Claude AI → paste Code back → download PDF.
       </div>
     </div>
 
     <!-- STEP 2 -->
     <div class="panel" id="step2Panel">
       <div class="lbl">🤖 Generated Prompt (ready for Claude AI)</div>
-      <div class="code-box" id="promptDisplay">Your prompt will appear here...</div>
+      <div class="code-box" id="promptDisplay">Your Code will appear here...</div>
       <div class="row">
-        <button class="btn bg" onclick="copyPrompt()">📋 Copy Full Data</button>
+        <button class="btn bg" onclick="copyPrompt()">📋 Copy Full Prompt</button>
         <button class="btn bo" onclick="openClaude()">🔗 Open Claude AI</button>
         <button class="btn bgr" onclick="goStep(1)">← Back</button>
       </div>
       <div class="instr">
         <strong>📌 Steps:</strong>
         <ol>
-          <li>Click <strong>Copy Full Data</strong></li>
+          <li>Click <strong>Copy Full Code</strong></li>
           <li>Click <strong>Open Claude AI</strong> (new tab)</li>
           <li>Paste into Claude chat → press Enter</li>
           <li>Wait for full  code response</li>
@@ -238,18 +274,24 @@ const ALLOWED_IPS = [
 
     <!-- STEP 3 -->
     <div class="panel" id="step3Panel">
-      <div class="lbl">✏️ Paste & Edit Code</div>
+      <div class="lbl">✏️ Paste &amp; Edit LaTeX Code — Color Highlighted</div>
       <div class="row">
         <button class="btn bp" onclick="pasteLatex()">📋 Paste from Clipboard</button>
-        <button class="btn bgr" onclick="document.getElementById('latexEditor').value='';updateLC()">🗑 Clear</button>
+        <button class="btn bgr" onclick="clearEditor()">🗑 Clear</button>
         <button class="btn bg" onclick="compileAndGo()">🔄 Compile PDF →</button>
         <span style="font-size:11px;color:#6b7280;" id="lcCount">0 lines</span>
+        <span style="font-size:11px;color:#6b7280;margin-left:8px;">
+          <span style="color:#569cd6;">■</span> Commands &nbsp;
+          <span style="color:#ce9178;">■</span> Text &nbsp;
+          <span style="color:#b5cea8;">■</span> Numbers &nbsp;
+          <span style="color:#6a9955;">■</span> Comments &nbsp;
+          <span style="color:#ffd700;">■</span> Brackets
+        </span>
       </div>
-      <textarea class="latex-area" id="latexEditor" style="height:calc(100vh - 290px);"
-        placeholder="Paste your Code from Claude AI here...&#10;&#10;\documentclass[a4paper,10pt]{article}&#10;..."
-        oninput="updateLC()"></textarea>
+      <textarea id="latexEditor" style="display:none;"></textarea>
+      <div id="cmEditor" style="flex:1; min-height:0; border-radius:8px; overflow:hidden; border:1px solid #2a2f45; font-size:13px;"></div>
       <div class="card warn">
-        <strong>Tip:</strong> Edit anything here — names, dates, bullet points. Then click <strong>Compile PDF</strong>.
+        <strong>Tip:</strong> Colors help you find things fast — <span style="color:#569cd6;">blue = LaTeX commands</span>, <span style="color:#ce9178;">orange = your text/names/dates</span>, <span style="color:#b5cea8;">green = numbers</span>, <span style="color:#6a9955;">grey = comments</span>. Edit anything, then click <strong>Compile PDF</strong>.
       </div>
     </div>
 
@@ -258,7 +300,7 @@ const ALLOWED_IPS = [
       <div class="pdf-toolbar">
         <button class="btn bg" onclick="downloadPDF()">⬇️ Download PDF</button>
         <button class="btn bp" onclick="recompile()">🔄 Recompile</button>
-        <button class="btn bgr" onclick="goStep(3)">← Edit The Code</button>
+        <button class="btn bgr" onclick="goStep(3)">← Edit Code</button>
         <div class="spinner" id="spin"></div>
         <span class="status-pill" id="statusPill">Waiting...</span>
         <div style="margin-left:auto; display:flex; align-items:center; gap:6px;">
@@ -297,7 +339,7 @@ INSTRUCTIONS:
 
 REQUIREMENTS:
 You are a Professional Resume writer in the specific domain of the job description.
-- If the JD belongs to IT — you are an  Architec.
+- If the JD belongs to IT — you are an IT/Software Architect.
 - If it is non-technical — you are an expert in that field.
 - Match action verbs and tech stack to the job description.
 - Add skills, tools, and servers based on their matured timeline (know which technology came in which year).
@@ -415,7 +457,7 @@ CLIENT 4 — Concentrix (Hyderabad, India) (Onsite):
 - Location: Hyderabad, India.
 
 CERTIFICATIONS:
-- Keep existing certifications from AI analysis changed —  add new certifications based on description.
+- Keep existing certifications from AI analysis unchanged — do not add new certifications.
 
 SKILL REPETITION REQUIREMENTS:
 1. mandatory_skills_tools_services: repeat each skill 6 to 8 times across Professional Summary and Responsibilities sections.
@@ -622,6 +664,32 @@ JOB DESCRIPTION:
 // ════════════════════════════════════════════════════
 let fullPrompt = '';
 let pdfBlob = null, pdfUrl = null;
+let cmInstance = null;
+
+// ── Init CodeMirror after DOM ready ──────────────────────────────────────────
+window.addEventListener('load', function() {
+  cmInstance = CodeMirror(document.getElementById('cmEditor'), {
+    mode: 'stex',
+    theme: 'dracula',
+    lineNumbers: true,
+    matchBrackets: true,
+    autoCloseBrackets: true,
+    styleActiveLine: true,
+    lineWrapping: true,
+    tabSize: 2,
+    indentWithTabs: false,
+    value: '',
+    extraKeys: {
+      'Tab': function(cm) { cm.replaceSelection('  '); }
+    }
+  });
+  // Keep hidden textarea in sync so compile functions still work
+  cmInstance.on('change', function() {
+    document.getElementById('latexEditor').value = cmInstance.getValue();
+    document.getElementById('lcCount').textContent =
+      cmInstance.lineCount() + ' lines';
+  });
+});
 
 document.getElementById('jdInput').addEventListener('input', function(){
   document.getElementById('jdCount').textContent = this.value.length + ' chars';
@@ -665,26 +733,32 @@ function openClaude() {
 async function pasteLatex() {
   try {
     const t = await navigator.clipboard.readText();
-    if (t) { document.getElementById('latexEditor').value = t; updateLC(); toast('✅ LaTeX pasted!'); }
+    if (t) {
+      if (cmInstance) { cmInstance.setValue(t); cmInstance.refresh(); }
+      document.getElementById('latexEditor').value = t;
+      updateLC();
+      toast('✅ LaTeX pasted! Colors applied — easy to edit now.');
+    }
   } catch {
-    document.getElementById('latexEditor').focus();
+    if (cmInstance) cmInstance.focus();
     toast('Press Ctrl+V inside the editor to paste', 'inf');
   }
 }
 
 function updateLC() {
-  document.getElementById('lcCount').textContent =
-    document.getElementById('latexEditor').value.split('\n').length + ' lines';
+  const lines = cmInstance
+    ? cmInstance.lineCount()
+    : document.getElementById('latexEditor').value.split('\n').length;
+  document.getElementById('lcCount').textContent = lines + ' lines';
 }
 
-document.getElementById('latexEditor').addEventListener('keydown', function(e) {
-  if (e.key === 'Tab') {
-    e.preventDefault();
-    const s = this.selectionStart;
-    this.value = this.value.substring(0,s) + '  ' + this.value.substring(this.selectionEnd);
-    this.selectionStart = this.selectionEnd = s + 2;
-  }
-});
+function clearEditor() {
+  if (cmInstance) { cmInstance.setValue(''); }
+  document.getElementById('latexEditor').value = '';
+  updateLC();
+}
+
+// Tab handling is done by CodeMirror extraKeys config above
 
 async function compileAndGo() {
   const latex = document.getElementById('latexEditor').value.trim();
