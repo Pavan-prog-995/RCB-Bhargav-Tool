@@ -186,7 +186,7 @@ const ALLOWED_IPS = [
   <div class="header">
     <div>
       <h1>🚀 Resume Optimizer Tool</h1>
-      <span>Paste JD → Copy Prompt → Claude AI → Paste LaTeX → Download PDF</span>
+      <span>Paste JD →  Download PDF</span>
     </div>
     <div class="badge">ATS 100%</div>
   </div>
@@ -194,7 +194,7 @@ const ALLOWED_IPS = [
   <div class="steps">
     <div class="step active" id="tab1" onclick="goStep(1)"><span class="num" id="n1">1</span>Paste JD</div>
     <div class="step" id="tab2" onclick="goStep(2)"><span class="num" id="n2">2</span>Copy → Claude AI</div>
-    <div class="step" id="tab3" onclick="goStep(3)"><span class="num" id="n3">3</span>Paste LaTeX</div>
+    <div class="step" id="tab3" onclick="goStep(3)"><span class="num" id="n3">3</span>Paste Code</div>
     <div class="step" id="tab4" onclick="goStep(4)"><span class="num" id="n4">4</span>PDF Download</div>
   </div>
 
@@ -205,12 +205,12 @@ const ALLOWED_IPS = [
       <div class="lbl">📋 Job Description</div>
       <textarea id="jdInput" rows="16" placeholder="Paste the full job description here...&#10;&#10;Include:&#10;• Job Title  • Required Skills  • Responsibilities  • Location"></textarea>
       <div class="row">
-        <button class="btn bp" onclick="generatePrompt()">⚡ Generate Prompt & Continue</button>
+        <button class="btn bp" onclick="generatePrompt()">⚡Paste and Proceed </button>
         <button class="btn bgr" onclick="document.getElementById('jdInput').value=''">🗑 Clear</button>
         <span style="font-size:11px;color:#6b7280;" id="jdCount">0 chars</span>
       </div>
       <div class="card">
-        <strong>How it works:</strong> Paste the job description → auto-combines with your hidden resume + ATS instructions → copy → paste into Claude AI → paste LaTeX back → download PDF.
+        <strong>How it works:</strong> Paste the job description → auto-combines with your hidden resume + ATS instructions → copy → paste into Claude AI → paste code back → download PDF.
       </div>
     </div>
 
@@ -219,26 +219,26 @@ const ALLOWED_IPS = [
       <div class="lbl">🤖 Generated Prompt (ready for Claude AI)</div>
       <div class="code-box" id="promptDisplay">Your prompt will appear here...</div>
       <div class="row">
-        <button class="btn bg" onclick="copyPrompt()">📋 Copy Full Prompt</button>
+        <button class="btn bg" onclick="copyPrompt()">📋 Copy Full Data</button>
         <button class="btn bo" onclick="openClaude()">🔗 Open Claude AI</button>
         <button class="btn bgr" onclick="goStep(1)">← Back</button>
       </div>
       <div class="instr">
         <strong>📌 Steps:</strong>
         <ol>
-          <li>Click <strong>Copy Full Prompt</strong></li>
+          <li>Click <strong>Copy Full Data</strong></li>
           <li>Click <strong>Open Claude AI</strong> (new tab)</li>
           <li>Paste into Claude chat → press Enter</li>
-          <li>Wait for full LaTeX code response</li>
+          <li>Wait for full  code response</li>
           <li>Select all Claude's response → Copy</li>
-          <li>Come back here → Step 3 → Paste LaTeX</li>
+          <li>Come back here → Step 3 → Paste Code</li>
         </ol>
       </div>
     </div>
 
     <!-- STEP 3 -->
     <div class="panel" id="step3Panel">
-      <div class="lbl">✏️ Paste & Edit LaTeX Code</div>
+      <div class="lbl">✏️ Paste & Edit Code</div>
       <div class="row">
         <button class="btn bp" onclick="pasteLatex()">📋 Paste from Clipboard</button>
         <button class="btn bgr" onclick="document.getElementById('latexEditor').value='';updateLC()">🗑 Clear</button>
@@ -246,7 +246,7 @@ const ALLOWED_IPS = [
         <span style="font-size:11px;color:#6b7280;" id="lcCount">0 lines</span>
       </div>
       <textarea class="latex-area" id="latexEditor" style="height:calc(100vh - 290px);"
-        placeholder="Paste your LaTeX from Claude AI here...&#10;&#10;\documentclass[a4paper,10pt]{article}&#10;..."
+        placeholder="Paste your Code from Claude AI here...&#10;&#10;\documentclass[a4paper,10pt]{article}&#10;..."
         oninput="updateLC()"></textarea>
       <div class="card warn">
         <strong>Tip:</strong> Edit anything here — names, dates, bullet points. Then click <strong>Compile PDF</strong>.
@@ -258,7 +258,7 @@ const ALLOWED_IPS = [
       <div class="pdf-toolbar">
         <button class="btn bg" onclick="downloadPDF()">⬇️ Download PDF</button>
         <button class="btn bp" onclick="recompile()">🔄 Recompile</button>
-        <button class="btn bgr" onclick="goStep(3)">← Edit LaTeX</button>
+        <button class="btn bgr" onclick="goStep(3)">← Edit The Code</button>
         <div class="spinner" id="spin"></div>
         <span class="status-pill" id="statusPill">Waiting...</span>
         <div style="margin-left:auto; display:flex; align-items:center; gap:6px;">
